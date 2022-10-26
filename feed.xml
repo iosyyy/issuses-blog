@@ -1,5 +1,136 @@
 <?xml version='1.0' encoding='UTF-8'?>
-<feed xmlns="http://www.w3.org/2005/Atom"><id>https://github.com/iosyyy/issuses-blog</id><title>RSS feed of iosyyy's issuses-blog</title><updated>2022-10-26T01:54:46.583366+00:00</updated><author><name>iosyyy</name><email>626797813@qq.com</email></author><link href="https://github.com/iosyyy/issuses-blog"/><link href="https://raw.githubusercontent.com/iosyyy/issuses-blog/master/feed.xml" rel="self"/><generator uri="https://lkiesow.github.io/python-feedgen" version="0.9.0">python-feedgen</generator><entry><id>https://github.com/iosyyy/issuses-blog/issues/9</id><title>springboot常见使用</title><updated>2022-10-26T01:54:46.729236+00:00</updated><content type="html"><![CDATA[<h1><strong>在springboot中使用h2数据库</strong></h1>
+<feed xmlns="http://www.w3.org/2005/Atom"><id>https://github.com/iosyyy/issuses-blog</id><title>RSS feed of iosyyy's issuses-blog</title><updated>2022-10-26T02:04:08.639808+00:00</updated><author><name>iosyyy</name><email>626797813@qq.com</email></author><link href="https://github.com/iosyyy/issuses-blog"/><link href="https://raw.githubusercontent.com/iosyyy/issuses-blog/master/feed.xml" rel="self"/><generator uri="https://lkiesow.github.io/python-feedgen" version="0.9.0">python-feedgen</generator><entry><id>https://github.com/iosyyy/issuses-blog/issues/10</id><title>egg.js</title><updated>2022-10-26T02:04:08.796262+00:00</updated><content type="html"><![CDATA[<ol>
+<li>
+<p>egg.js的逻辑</p>
+<p>egg.js主要的项目是在router中调用controller中的方法然后调用service中的方法最后从service调用底层数据库model.model负责定义表的结构.</p>
+</li>
+<li>
+<p>配置:</p>
+<pre><code class="language-jsx">const config: PowerPartial&lt;EggAppConfig&gt; = {
+    sequelize: {
+      dialect: &#x27;mysql&#x27;,
+      host: process.env.DEV_DB_HOST,// 数据库的地址
+      port: 3306,
+      database: &#x27;graduate&#x27;,// database name
+      username: process.env.DEV_DB_USERNAME,// 数据库登录的用户名
+      password: process.env.DEV_DB_KEY,// 数据库登录的密码
+      define: {
+        timestamps: true,// 时间戳默认会在插入的时候生成create_time
+        underscored: true,
+        freezeTableName: true,// 不然默认生成s结尾的tablename
+      },
+      query: {
+        nest: true,
+      },
+    },
+    multipart: {
+      fileExtensions: [&#x27;.xlsx&#x27;]// egg.js 默认不允许上传.xlsx文件此操作可以限制上传的文件
+    }
+  };
+</code></pre>
+</li>
+<li>
+<p>表的结构如何定义:</p>
+<pre><code class="language-jsx">module.exports = {
+  up: async (queryInterface, Sequelize) =&gt; {
+    const { INTEGER, STRING, DATE } = Sequelize;
+    await queryInterface.createTable(&#x27;merge_major_project&#x27;, {
+      id: { type: INTEGER, primaryKey: true, autoIncrement: true },
+      major_id: {
+        type: Sequelize.DataTypes.INTEGER,
+        references: {
+          model: {
+            tableName: &#x27;majors&#x27;,
+          },
+          key: &#x27;id&#x27;,
+        },
+      },
+      project_id: {
+        type: Sequelize.DataTypes.INTEGER,
+        references: {
+          model: {
+            tableName: &#x27;projects&#x27;,
+          },
+          key: &#x27;id&#x27;,
+        },
+      },
+      created_at: DATE,
+      updated_at: DATE,
+    });
+  },
+
+  down: async (queryInterface, Sequelize) =&gt; {
+    /**
+     * Add reverting commands here.
+     *
+     * Example:
+     * await queryInterface.dropTable(&#x27;users&#x27;);
+     */
+    await queryInterface.dropTable(&#x27;merge_major_project&#x27;);
+  },
+};
+</code></pre>
+<p>使用如上方法即可定义一个<code>merge_major_project</code>表值得注意的是<code>egg.js</code>会默认给表加上一个s作为结尾,在设置中修改<code>freezeTableName: true</code>即可完成表名自由</p>
+</li>
+<li>
+<p>多对多怎么设置</p>
+<pre><code class="language-jsx">Projects.associate = () =&gt; {
+  // foreignKey和otherKey都是中间表的属性分别对应,关联表和被关联表,targetKey还是被关联表的属性,sourceKey是关联表中属性
+  app.model.Projects.belongsToMany(app.model.Majors, {
+    through: app.model.MergeMajorProject,
+    otherKey: &#x27;major_uuid&#x27;,
+    sourceKey: &#x27;uuid&#x27;,
+    foreignKey: &#x27;project_uuid&#x27;,
+    targetKey: &#x27;uuid&#x27;,
+  });
+  // foreignKey代表关联表(.之前的乃个表)中的属性,target代表被关联的表中的属性
+  app.model.Projects.belongsTo(app.model.Enterprises, {
+    foreignKey: &#x27;enterprise_uuid&#x27;,
+    targetKey: &#x27;uuid&#x27;,
+  });
+};
+</code></pre>
+</li>
+<li>
+<p>如何查询</p>
+<pre><code class="language-jsx">transaction = await this.ctx.model.transaction();
+const results = await this.ctx.model.Projects.findAndCountAll({
+  where,
+  transaction,// 绑定egg.js中的事物
+  distinct: true,// 去重保证count值的正确性
+  include: [
+    {
+      model: this.ctx.model.Teachers,
+      attributes: [&#x27;id&#x27;, &#x27;username&#x27;, &#x27;email&#x27;, &#x27;institute&#x27;],
+      required: true,// true为inner join ,false为left join
+      through: {
+        where: {
+          state: { [Op.like]: `%${state}%` }, // 通过through判断中间表的属性
+        },
+      },
+      include: [
+        {
+          model: this.ctx.model.Schools,
+        },
+      ],
+    },
+    {
+      model: this.ctx.model.Enterprises,
+    },
+    {
+      model: this.ctx.model.Majors,
+      attributes: [&#x27;name&#x27;],// 限制输出的行为name一条
+    },
+  ],
+  offset: Number((page - 1) * 10),
+  limit: 10,
+  subQuery: false, // 不让在子查询里分页，全局处理,可以防止through:where中的一些问题
+});
+console.log(results.rows,results.count);
+</code></pre>
+</li>
+</ol>
+]]></content><link href="https://github.com/iosyyy/issuses-blog/issues/10" rel="alternate"/><published>2022-10-26T02:01:59+00:00</published></entry><entry><id>https://github.com/iosyyy/issuses-blog/issues/9</id><title>springboot常见使用</title><updated>2022-10-26T02:04:08.885783+00:00</updated><content type="html"><![CDATA[<h1><strong>在springboot中使用h2数据库</strong></h1>
 <h2><strong>一、h2数据库介绍</strong></h2>
 <p>h2database为我们提供了十分轻量，十分快捷方便的内嵌式数据库</p>
 <ul>
@@ -384,5 +515,5 @@ public class OkHttpUtil{
 <p><a href="https://www.programcreek.com/java-api-examples/?code=hjw541988478/OkHttpTutorial/OkHttpTutorial-master/app/src/main/java/in/harvestday/okhttpdemo/OkHttpUtil.java">https://www.programcreek.com/java-api-examples/?code=hjw541988478/OkHttpTutorial/OkHttpTutorial-master/app/src/main/java/in/harvestday/okhttpdemo/OkHttpUtil.java</a></p>
 <p><a href="https://github.com/guozhengXia/OkHttpUtils">https://github.com/guozhengXia/OkHttpUtils</a></p>
 <p><a href="https://github.com/hongyangAndroid/okhttputils">https://github.com/hongyangAndroid/okhttputils</a></p>
-]]></content><link href="https://github.com/iosyyy/issuses-blog/issues/9" rel="alternate"/><published>2022-10-26T01:52:38+00:00</published></entry><entry><id>https://github.com/iosyyy/issuses-blog/issues/8</id><title>#8</title><updated>2022-10-26T01:54:46.817211+00:00</updated><content type="html"><![CDATA[<p>my final test in this</p>
+]]></content><link href="https://github.com/iosyyy/issuses-blog/issues/9" rel="alternate"/><published>2022-10-26T01:52:38+00:00</published></entry><entry><id>https://github.com/iosyyy/issuses-blog/issues/8</id><title>#8</title><updated>2022-10-26T02:04:08.978763+00:00</updated><content type="html"><![CDATA[<p>my final test in this</p>
 ]]></content><link href="https://github.com/iosyyy/issuses-blog/issues/8" rel="alternate"/><published>2022-10-26T01:41:33+00:00</published></entry></feed>
