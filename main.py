@@ -10,7 +10,9 @@ from lxml.etree import CDATA
 
 MD_HEAD = """## issuses-blog
 项目借鉴自 Gitblog 感谢大佬的项目♥
-[RSS Feed](https://raw.githubusercontent.com/{repo_name}/master/feed.xml)
+![header-image](.//header_white_.png)
+
+[The RSS Feed](https://raw.githubusercontent.com/{repo_name}/master/feed.xml)
 """
 
 BACKUP_DIR = "BACKUP"
