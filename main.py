@@ -8,8 +8,8 @@ from github import Github
 from feedgen.feed import FeedGenerator
 from lxml.etree import CDATA
 
-MD_HEAD = """## Gitblog
-My personal blog using issues and GitHub Actions (随意转载，无需署名)
+MD_HEAD = """## issuses-blog
+项目借鉴自 Gitblog 感谢大佬的项目♥
 [RSS Feed](https://raw.githubusercontent.com/{repo_name}/master/feed.xml)
 """
 
@@ -23,9 +23,9 @@ IGNORE_LABELS = FRIENDS_LABELS + TOP_ISSUES_LABELS + TODO_ISSUES_LABELS
 FRIENDS_TABLE_HEAD = "| Name | Link | Desc | \n | ---- | ---- | ---- |\n"
 FRIENDS_TABLE_TEMPLATE = "| {name} | {link} | {desc} |\n"
 FRIENDS_INFO_DICT = {
-    "名字": "",
-    "链接": "",
-    "描述": "",
+    "名字": "听风",
+    "链接": "https://github.com/iosyyy",
+    "描述": "不可描述 😳",
 }
 
 
