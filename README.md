@@ -7,10 +7,8 @@
 </p>
 [The RSS Feed](https://raw.githubusercontent.com/iosyyy/issuses-blog/master/feed.xml)
 
-## 友情链接
-| Name | Link | Desc | 
- | ---- | ---- | ---- |
 ## 最近更新
+- [hello world](https://github.com/iosyyy/issuses-blog/issues/11)--2022-10-26
 - [egg.js](https://github.com/iosyyy/issuses-blog/issues/10)--2022-10-26
 - [springboot常见使用](https://github.com/iosyyy/issuses-blog/issues/9)--2022-10-26
 - [#8](https://github.com/iosyyy/issuses-blog/issues/8)--2022-10-26
