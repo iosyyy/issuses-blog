@@ -10,16 +10,18 @@
 
 <div align="center">
 
-![](https://img.shields.io/badge/license-MIT-green)
-[![contributions welcome](https://img.shields.io/badge/contributions-welcome-brightgreen.svg?style=flat-square)](https://github.com/iosyyy/issuses-blog/blob/main/WELCOME.md#user-content-welcome)
-![File count](https://img.shields.io/github/directory-file-count/iosyyy/issuses-blog)
-![GitHub issues](https://img.shields.io/github/issues/iosyyy/issuses-blog)
-![GitHub closed issues](https://img.shields.io/github/issues-closed/iosyyy/issuses-blog)
 <a href="https://github.com/iosyyy?tab=followers"><img src="https://img.shields.io/github/followers/iosyyy?label=Followers&style=social" alt="GitHub Badge"></a>
 ![GitHub Repo stars](https://img.shields.io/github/stars/iosyyy/issuses-blog?style=social)
 <!-- Docs badge not working ... if you have time to help investigate, please do.
 [![Inline docs](http://inch-ci.org/github/dwyl/hits.svg?style=flat-square)](http://inch-ci.org/github/dwyl/hits)
 -->
+
+![](https://img.shields.io/badge/license-MIT-green)
+[![contributions welcome](https://img.shields.io/badge/contributions-welcome-brightgreen.svg?style=flat-square)](https://github.com/iosyyy/issuses-blog/blob/main/WELCOME.md#user-content-welcome)
+![GitHub issues](https://img.shields.io/github/issues/iosyyy/issuses-blog)
+![GitHub closed issues](https://img.shields.io/github/issues-closed/iosyyy/issuses-blog)
+![File count](https://img.shields.io/github/directory-file-count/iosyyy/issuses-blog)
+
 </div>
 
 ## 最近更新
